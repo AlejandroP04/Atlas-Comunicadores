@@ -1,0 +1,253 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- COLORES Y UTILIDADES --- */
+.bg-black {
+    background-color: #002F6C !important;
+}
+
+.text-neon {
+    color: #CCD5E2;
+}
+
+.tracking-tighter {
+    letter-spacing: -2px;
+}
+
+/* --- HEADER (STICKY) --- */
+.main-header {
+    z-index: 1050;
+    background-color: #ffffff;
+}
+
+.logo-text {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+.search-wrapper input {
+    background-color: #f2f2f2;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.nav-link-custom {
+    text-decoration: none;
+    color: #666;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link-custom:hover {
+    color: #000;
+}
+
+/* --- HERO SECTION --- */
+.hero-section {
+    padding: 60px 0;
+}
+
+.hero-text {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: #cccccc;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* --- BOTONES --- */
+.btn-neon {
+    background-color: #99ACC4;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-neon:hover {
+    background-color: #99ACC4;
+    transform: translateY(-1px);
+    /*box-shadow: 0 4px 12px rgba(153,172,196);*/
+}
+
+/* --- FILTROS LATERALES --- */
+.filter-sidebar {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.filter-group-header {
+    background-color: #f1f1f1;
+    border-radius: 6px;
+    padding: 10px 12px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    transition: background 0.2s;
+}
+
+.filter-group-header:hover {
+    background-color: #e9e9e9;
+}
+
+.filter-checkbox {
+    accent-color: #99ACC4;
+}
+
+/* --- VISTA: GRID (TARJETAS) --- */
+.creator-card {
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+.creator-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+}
+
+.avatar-circle {
+    width: 48px;
+    height: 48px;
+    background-color: #222;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* --- VISTA: LIST (FILAS) --- */
+.creator-list-row {
+    background: white;
+    border: 1px solid #eee;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    transition: border-color 0.2s;
+}
+
+.creator-list-row:hover {
+    border-color: #CCD5E2;
+}
+
+.list-main-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 2;
+}
+
+.list-meta {
+    display: flex;
+    gap: 30px;
+    flex: 3;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.avatar-small {
+    width: 36px;
+    height: 36px;
+    background: #333;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .list-meta {
+        display: none !important; /* Ocultar detalles en móvil para no amontonar */
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    /* --- VISTA: BUBBLES (D3.js) --- */
+#canvas-contenedor {
+    width: 100%;
+    height: 600px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    overflow: hidden; 
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+}
+
+.fondo-lienzo { cursor: grab; }
+.fondo-lienzo:active { cursor: grabbing; }
+.nodo-burbuja { 
+    cursor: pointer; 
+    /* Esta línea crea la animación suave al pasar el mouse */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s; 
+}
+
+.nodo-burbuja:hover {
+    filter: brightness(0.9);
+    transform: scale(1.08); /* Hace que la burbuja crezca un 8% al tocarla */
+}
+
+.nodo-valor { font-weight: bold; font-size: 18px; pointer-events: none; fill: #111; }
+.nodo-etiqueta { font-size: 13px; pointer-events: none; fill: #333; }
+
+/* --- NUEVA VISTA: LISTA (TABLA ESTILO DATATABLE) --- */
+.custom-list-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.custom-list-table thead th {
+    background-color: #002F6C !important; /* Tu color principal azul oscuro */
+    color: #ffffff !important; /* Texto en color blanco para que contraste y se lea bien */
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-bottom: none;
+    white-space: nowrap;
+}
+
+/* Redondear las esquinas superiores del encabezado */
+.custom-list-table thead th:first-child { border-top-left-radius: 8px; }
+.custom-list-table thead th:last-child { border-top-right-radius: 8px; }
+
+.custom-list-table tbody td {
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.custom-list-table tbody tr:hover td {
+    background-color: #f8f9fa; /* Efecto hover tenue al pasar el ratón */
+}
+
+}
