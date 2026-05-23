@@ -1,32 +1,44 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
-
-// Importamos las rutas
-const atlasRoutes = require('./routes/atlasRoutes');
+const mysql = require('mysql2');
+require('dotenv').config(); // Esto carga tus secretos del archivo .env
 
 const app = express();
-
-// Middlewares esenciales
 app.use(cors());
 app.use(express.json());
 
-// Configuración de Rutas
-app.use('/api', atlasRoutes);
-
-// Manejo de errores básico
-app.use((req, res) => {
-    res.status(404).json({ mensaje: "Ruta no encontrada" });
+// Creación de la conexión segura a MariaDB
+const db = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
 });
 
-// Manejo de errores globales
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Algo salió mal en el servidor' });
+// Prueba de conexión para detectar errores
+db.connect((err) => {
+    if (err) {
+        console.error('Error conectando a MariaDB:', err.message);
+        return;
+    }
+    console.log('Conexión exitosa a la base de datos atlas_fes');
 });
 
-// Arrancar el servidor
+// Ruta de tu API para enviar los creadores al Frontend
+app.get('/api/personas', (req, res) => {
+    const query = 'SELECT * FROM creadores';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al consultar la base de datos:', err);
+            res.status(500).send('Error interno del servidor');
+            return;
+        }
+        res.json(results);
+    });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log('Servidor corriendo en puerto ' + PORT);
+    console.log(`Servidor corriendo protegido en http://localhost:${PORT}`);
 });
