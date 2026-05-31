@@ -1,14 +1,14 @@
 const API_URL = "/api";
 let currentView = 'grid'; // Vista por defecto
 let simulacionActual = null; // Para limpiar animaciones de D3
-let allCreators = []; // ¡NUEVO! Aquí guardaremos la base de datos en memoria
+let allCreators = []; // Aquí guardaremos la base de datos en memoria
 
 // 1. CARGAR PERSONAS (Filtro Inteligente en el Frontend)
 function cargarPersonas() {
     // Empezamos con la lista completa de creadores
     let dataFiltrada = [...allCreators];
 
-   // --- A. Lógica de la Barra de Búsqueda ---
+    // --- A. Lógica de la Barra de Búsqueda ---
     const inputBusqueda = document.getElementById('input-busqueda').value;
     
     if (inputBusqueda) {
@@ -407,7 +407,7 @@ function renderWheel(data, container) {
 }
 
 // ==========================================
-// 6. RENDER TREEMAP (Mapa de Árbol D3.js) - VERSIÓN FINAL
+// 6. RENDER TREEMAP (Mapa de Árbol D3.js)
 // ==========================================
 function renderTreemap(data, container) {
     container.className = "col-12";
@@ -416,7 +416,7 @@ function renderTreemap(data, container) {
     container.innerHTML = `
         <div class="text-center mb-4">
             <h2 class="fw-bold mb-1">Temas por Grupo</h2>
-            <p class="text-muted small mb-3">El Tamaño Representa el Número de Creadores • Haz Clic para Explorar/p>
+            <p class="text-muted small mb-3">El Tamaño Representa el Número de Creadores • Haz Clic para Explorar</p>
             <div class="d-flex justify-content-start mb-2 px-3">
                 <button id="btn-reset-treemap" class="btn btn-sm fw-bold px-4 py-2 rounded" style="background-color: #99ACC4; color: #000; border: none;">Todos los Grupos</button>
             </div>
@@ -449,14 +449,8 @@ function renderTreemap(data, container) {
     const height = 550;
     
     const coloresPersonalizados = [
-        "#002F6C", // Azul marino principal
-        "#99ACC4", // Gris azulado
-        "#005b96", // Azul medio
-        "#6497b1", // Azul claro
-        "#b3cde0", // Celeste grisáceo
-        "#2E4053", // Gris oscuro
-        "#5D6D7E", // Gris plomo
-        "#85929E"  // Gris claro
+        "#002F6C", "#99ACC4", "#005b96", "#6497b1", 
+        "#b3cde0", "#2E4053", "#5D6D7E", "#85929E"
     ];
     const color = d3.scaleOrdinal(coloresPersonalizados);
 
@@ -499,7 +493,6 @@ function renderTreemap(data, container) {
         .on("mouseover", function() { if(!d3.select(this.parentNode).classed("zoomed")) d3.select(this).style("opacity", 1); })
         .on("mouseout", function() { if(!d3.select(this.parentNode).classed("zoomed")) d3.select(this).style("opacity", 0.85); });
 
-    // Textos pequeños originales (ahora en color blanco)
     nodos.append("text")
         .attr("class", "texto-normal")
         .attr("x", 4).attr("y", 14).style("pointer-events", "none") 
@@ -556,29 +549,21 @@ function renderTreemap(data, container) {
         vistaActualNode = this;
         const t = svg.transition().duration(750).ease(d3.easeCubicOut);
 
-        // Ocultar títulos de grupo principales
         svg.selectAll(".grupo-titulo").transition(t).style("opacity", 0);
 
-        // Desvanecer los demás nodos no seleccionados
         nodos.filter(function() { return this !== vistaActualNode; })
              .transition(t).style("opacity", 0).style("pointer-events", "none");
 
-        // Preparar el nodo clicado
         const clickedNode = d3.select(this);
         clickedNode.raise(); 
         clickedNode.classed("zoomed", true);
-
-        // Mover a la esquina superior izquierda
         clickedNode.transition(t).attr("transform", `translate(0, 0)`);
 
-        // Expandir rectángulo al 100%
         clickedNode.select("rect").transition(t)
                    .attr("width", width).attr("height", height).style("opacity", 1);
 
-        // Ocultar textos pequeños originales
         clickedNode.selectAll(".texto-normal").transition(t).style("opacity", 0);
 
-        // Crear e inyectar el texto GIGANTE animado (en blanco)
         let largeGroup = clickedNode.select(".texto-grande");
         if (largeGroup.empty()) {
             largeGroup = clickedNode.append("g").attr("class", "texto-grande").style("opacity", 0);
@@ -597,7 +582,6 @@ function renderTreemap(data, container) {
         }
         largeGroup.transition(t).style("opacity", 1);
 
-        // Actualizar la tabla con la categoría elegida
         actualizarTablaTreemap(d.data.creadoresLista, `Categoría: ${d.data.name}`);
     });
 
@@ -626,9 +610,18 @@ function renderTreemap(data, container) {
 // 7. CARGAR FILTROS DINÁMICOS (CONSTRUIDOS DESDE CERO EN EL FRONTEND)
 async function cargarFiltros() {
     try {
-        // Obtenemos a todas las personas y las guardamos en la memoria global
         const res = await fetch(`${API_URL}/personas`);
-        allCreators = await res.json(); 
+        const rawData = await res.json(); 
+
+        // TRADUCTOR: Convertimos las columnas de SQL al formato del Frontend
+        allCreators = rawData.map(c => ({
+            nombre: c.nombre,
+            canal: c.plataforma,      // Traduce 'plataforma' (SQL) a 'canal' (JS)
+            categoria: c.tematicas,   // Traduce 'tematicas' (SQL) a 'categoria' (JS)
+            perfil: c.funcion,        // Traduce 'funcion' (SQL) a 'perfil' (JS)
+            pais: "México",           // País por defecto
+            multimedia: c.multimedia
+        }));
 
         const conteos = {
             perfil: {},
@@ -677,6 +670,7 @@ async function cargarFiltros() {
     } catch (err) { console.error("Error cargando filtros dinámicos:", err); }
 }
 
+// EVENT LISTENERS
 document.querySelectorAll('#view-controls .btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('#view-controls .btn').forEach(b => b.classList.remove('active', 'btn-dark'));
@@ -696,4 +690,4 @@ document.getElementById('btn-clear-all').addEventListener('click', () => {
 });
 
 // INICIAR APLICACIÓN
-cargarFiltros().then(() => cargarPersonas()); 
+cargarFiltros().then(() => cargarPersonas());
