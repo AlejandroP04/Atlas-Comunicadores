@@ -1,11 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
+const path = require('path'); // 1. AGREGADO: Módulo para manejar rutas de carpetas
 require('dotenv').config(); // Esto carga tus secretos del archivo .env
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// 2. AGREGADO: Le dice a Express dónde están tus archivos CSS, JS e imágenes.
+// Usamos '../frontend' para salir de la carpeta backend y entrar a frontend.
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Creación de la conexión segura a MariaDB
 const db = mysql.createConnection({
@@ -38,7 +43,12 @@ app.get('/api/personas', (req, res) => {
     });
 });
 
+// 3. AGREGADO: Cuando alguien entre a la raíz (/), le enviamos el index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo protegido en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
