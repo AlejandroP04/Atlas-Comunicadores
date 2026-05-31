@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "/api";
 let currentView = 'grid'; // Vista por defecto
 let simulacionActual = null; // Para limpiar animaciones de D3
 let allCreators = []; // ¡NUEVO! Aquí guardaremos la base de datos en memoria
