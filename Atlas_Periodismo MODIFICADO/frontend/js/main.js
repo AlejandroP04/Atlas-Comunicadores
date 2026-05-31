@@ -656,12 +656,13 @@ async function cargarFiltros() {
                     <span class="small fw-bold text-uppercase">${grupo.icono} ${grupo.titulo}</span>
                     <span class="small">↓</span>
                 </div>
+                
                 <div id="collapse-${grupo.id}" class="collapse show bg-white p-2">
                     ${Object.entries(grupo.opciones)
                         .sort((a, b) => b[1] - a[1])
                         .map(([nombre, count]) => `
                         <div class="form-check small d-flex justify-content-between">
-                            <label class="form-check-label">
+                            <label class="form-check-label text-truncate" style="max-width: 80%;">
                                 <input class="form-check-input filter-checkbox" type="checkbox" data-grupo="${grupo.id}" value="${nombre}"> ${nombre}
                             </label>
                             <span class="text-muted">(${count})</span>
