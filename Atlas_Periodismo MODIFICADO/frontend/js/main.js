@@ -263,7 +263,7 @@ function renderWheel(data, container) {
         <div class="text-center mb-4">
             <h2 class="fw-bold mb-1">Rueda del Descubrimiento</h2>
             <p class="text-muted small mb-3">Categorías (interior) → Creadores (exterior) • Haz clic para explorar</p>
-            <button id="btn-reset-wheel" class="btn btn-sm btn-dark fw-bold px-4 py-2 rounded-pill mb-2">🌍 Todo el Atlas</button>
+            <button id="btn-reset-wheel" class="btn btn-sm btn-dark fw-bold px-4 py-2 rounded-pill mb-2">Todo el Atlas</button>
         </div>
         <div id="wheel-contenedor" class="d-flex justify-content-center bg-white rounded-top shadow-sm py-4 overflow-hidden border-bottom" style="min-height: 350px;"></div>
         
