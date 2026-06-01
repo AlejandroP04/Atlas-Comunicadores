@@ -638,9 +638,9 @@ async function cargarFiltros() {
         });
 
         const misFiltros = [
-            { id: 'canal', titulo: 'Plataforma', icono: '📱', opciones: conteos.canal },
             { id: 'perfil', titulo: 'Perfil', icono: '👤', opciones: conteos.perfil },
             { id: 'categoria', titulo: 'Categoría', icono: '🏷️', opciones: conteos.categoria },
+            { id: 'canal', titulo: 'Plataforma', icono: '📱', opciones: conteos.canal },
             { id: 'pais', titulo: 'País', icono: '📍', opciones: conteos.pais }
         ];
 
