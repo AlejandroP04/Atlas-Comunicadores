@@ -12,7 +12,6 @@ function cargarPersonas() {
     const inputBusqueda = document.getElementById('input-busqueda').value;
     
     if (inputBusqueda) {
-        // Función mágica para ignorar mayúsculas y quitar acentos (tildes)
         const limpiarTexto = (texto) => {
             return (texto || '')
                 .toLowerCase()
@@ -26,27 +25,29 @@ function cargarPersonas() {
             limpiarTexto(p.nombre).includes(busqueda) ||
             limpiarTexto(p.categoria).includes(busqueda) ||
             limpiarTexto(p.pais).includes(busqueda) ||
-            limpiarTexto(p.perfil).includes(busqueda)
+            limpiarTexto(p.perfil).includes(busqueda) ||
+            limpiarTexto(p.canal).includes(busqueda)
         );
     }
 
-    // --- B. Lógica de Filtros por Checkboxes (AND entre grupos, OR dentro del grupo) ---
+    // --- B. Lógica de Filtros por Checkboxes ---
     const checkboxes = document.querySelectorAll('.filter-checkbox:checked');
     const filtrosActivos = {};
 
-    // Agrupamos qué casillas están marcadas según su categoría (perfil, categoria o pais)
     checkboxes.forEach(cb => {
         const grupo = cb.getAttribute('data-grupo'); 
         if (!filtrosActivos[grupo]) filtrosActivos[grupo] = [];
         filtrosActivos[grupo].push(cb.value);
     });
 
-    // Aplicamos los filtros grupo por grupo
     Object.keys(filtrosActivos).forEach(grupo => {
         const valoresSeleccionados = filtrosActivos[grupo];
         if (valoresSeleccionados.length > 0) {
-            // Filtramos la data para que solo queden los que coincidan con los seleccionados de este grupo
-            dataFiltrada = dataFiltrada.filter(p => valoresSeleccionados.includes(p[grupo]));
+            dataFiltrada = dataFiltrada.filter(p => {
+                // Separamos por comas las categorías del creador para buscar coincidencias exactas
+                const valoresCreador = p[grupo] ? String(p[grupo]).split(',').map(s => s.trim()) : [];
+                return valoresSeleccionados.some(seleccionado => valoresCreador.includes(seleccionado));
+            });
         }
     });
 
@@ -121,7 +122,8 @@ function renderBubbles(data, container) {
     
     const conteoPorCategoria = {};
     data.forEach(p => {
-        const cat = p.categoria || 'Sin categoría';
+        // En los gráficos usamos la primera categoría si hay varias
+        const cat = p.categoria ? String(p.categoria).split(',')[0].trim() : 'Sin categoría';
         conteoPorCategoria[cat] = (conteoPorCategoria[cat] || 0) + 1;
     });
     
@@ -269,7 +271,8 @@ function renderWheel(data, container) {
     `;
 
     const rootData = { name: "ATLAS", children: [] };
-    const agrupado = d3.group(data, d => d.categoria || 'Sin Categoría');
+    // Usamos la primera categoría para agrupar en la rueda
+    const agrupado = d3.group(data, d => d.categoria ? String(d.categoria).split(',')[0].trim() : 'Sin Categoría');
     
     for (const [categoria, creadores] of agrupado) {
         rootData.children.push({
@@ -412,7 +415,6 @@ function renderWheel(data, container) {
 function renderTreemap(data, container) {
     container.className = "col-12";
     
-    // 1. Estructura HTML
     container.innerHTML = `
         <div class="text-center mb-4">
             <h2 class="fw-bold mb-1">Temas por Grupo</h2>
@@ -425,9 +427,12 @@ function renderTreemap(data, container) {
         <div id="treemap-table-container" class="bg-white rounded-bottom shadow-sm p-4 px-5 border-top"></div>
     `;
 
-    // 2. Preparar Datos
     const rootData = { name: "Root", children: [] };
-    const agrupado = d3.group(data, d => d.perfil || 'General', d => d.categoria || 'Variado');
+    const agrupado = d3.group(
+        data, 
+        d => d.perfil ? String(d.perfil).split(',')[0].trim() : 'General', 
+        d => d.categoria ? String(d.categoria).split(',')[0].trim() : 'Variado'
+    );
     
     for (const [perfil, categorias] of agrupado) {
         const hijosPerfil = [];
@@ -443,7 +448,6 @@ function renderTreemap(data, container) {
 
     if (rootData.children.length === 0) return;
 
-    // 3. Configuración SVG y Paleta de Colores Personalizada
     const contenedor = document.getElementById("treemap-contenedor");
     const width = contenedor.clientWidth || 900;
     const height = 550;
@@ -466,7 +470,6 @@ function renderTreemap(data, container) {
         .size([width, height])
         .paddingTop(25).paddingRight(3).paddingInner(3)(root);
 
-    // 4. Dibujar Títulos (con clase para poder ocultarlos)
     svg.selectAll("titles")
         .data(root.descendants().filter(d => d.depth === 1))
         .join("text")
@@ -478,7 +481,6 @@ function renderTreemap(data, container) {
         .attr("font-weight", "bold")
         .attr("fill", d => color(d.data.name)); 
 
-    // 5. Dibujar Cuadros
     const nodos = svg.selectAll("g")
         .data(root.leaves())
         .join("g")
@@ -509,7 +511,6 @@ function renderTreemap(data, container) {
         .text(d => (d.x1 - d.x0 > 30 && d.y1 - d.y0 > 30) ? d.data.value : "")
         .attr("font-size", "10px").attr("fill", "#f8f9fa");
 
-    // 6. FUNCIONES DE TABLA DINÁMICA
     function actualizarTablaTreemap(creadoresAMostrar, titulo) {
         const contenedorTabla = document.getElementById("treemap-table-container");
         let tablaHTML = `
@@ -539,7 +540,6 @@ function renderTreemap(data, container) {
 
     actualizarTablaTreemap(data, "Todos los Creadores");
 
-    // 7. LÓGICA DE ANIMACIÓN AL HACER CLIC
     let vistaActualNode = null;
 
     nodos.on("click", function(event, d) {
@@ -585,7 +585,6 @@ function renderTreemap(data, container) {
         actualizarTablaTreemap(d.data.creadoresLista, `Categoría: ${d.data.name}`);
     });
 
-    // 8. BOTÓN PARA REGRESAR A LA VISTA NORMAL
     document.getElementById("btn-reset-treemap").addEventListener("click", () => {
         if (!vistaActualNode) return; 
         
@@ -613,29 +612,33 @@ async function cargarFiltros() {
         const res = await fetch(`${API_URL}/personas`);
         const rawData = await res.json(); 
 
-        // TRADUCTOR: Convertimos las columnas de SQL al formato del Frontend
         allCreators = rawData.map(c => ({
             nombre: c.nombre,
-            canal: c.plataforma,      // Traduce 'plataforma' (SQL) a 'canal' (JS)
-            categoria: c.tematicas,   // Traduce 'tematicas' (SQL) a 'categoria' (JS)
-            perfil: c.funcion,        // Traduce 'funcion' (SQL) a 'perfil' (JS)
-            pais: "México",           // País por defecto
+            canal: c.plataforma,
+            categoria: c.tematicas,
+            perfil: c.funcion,
+            pais: "México",
             multimedia: c.multimedia
         }));
 
-        const conteos = {
-            perfil: {},
-            categoria: {},
-            pais: {}
+        const conteos = { perfil: {}, categoria: {}, pais: {}, canal: {} };
+
+        // Función para separar textos por comas y limpiarlos
+        const separarComas = (texto) => {
+            if (!texto) return [];
+            return String(texto).split(',').map(item => item.trim()).filter(item => item !== '');
         };
 
+        // CONTAMOS LOS FILTROS CORTANDO LAS COMAS
         allCreators.forEach(p => {
-            if (p.perfil) conteos.perfil[p.perfil] = (conteos.perfil[p.perfil] || 0) + 1;
-            if (p.categoria) conteos.categoria[p.categoria] = (conteos.categoria[p.categoria] || 0) + 1;
-            if (p.pais) conteos.pais[p.pais] = (conteos.pais[p.pais] || 0) + 1;
+            separarComas(p.perfil).forEach(item => conteos.perfil[item] = (conteos.perfil[item] || 0) + 1);
+            separarComas(p.categoria).forEach(item => conteos.categoria[item] = (conteos.categoria[item] || 0) + 1);
+            separarComas(p.pais).forEach(item => conteos.pais[item] = (conteos.pais[item] || 0) + 1);
+            separarComas(p.canal).forEach(item => conteos.canal[item] = (conteos.canal[item] || 0) + 1); // Cuenta plataformas
         });
 
-        const misTresFiltros = [
+        const misFiltros = [
+            { id: 'canal', titulo: 'Plataforma', icono: '📱', opciones: conteos.canal },
             { id: 'perfil', titulo: 'Perfil', icono: '👤', opciones: conteos.perfil },
             { id: 'categoria', titulo: 'Categoría', icono: '🏷️', opciones: conteos.categoria },
             { id: 'pais', titulo: 'País', icono: '📍', opciones: conteos.pais }
@@ -643,7 +646,7 @@ async function cargarFiltros() {
 
         const container = document.getElementById('filters-container');
 
-        container.innerHTML = misTresFiltros.map(grupo => `
+        container.innerHTML = misFiltros.map(grupo => `
             <div class="filter-group mb-2 border rounded overflow-hidden">
                 <div class="filter-group-header p-2 bg-light d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapse-${grupo.id}">
                     <span class="small fw-bold text-uppercase">${grupo.icono} ${grupo.titulo}</span>
@@ -652,12 +655,10 @@ async function cargarFiltros() {
                 
                 <div id="collapse-${grupo.id}" class="collapse show bg-white p-2">
                     ${Object.entries(grupo.opciones)
-                        .sort((a, b) => b[1] - a[1])
+                        .sort((a, b) => b[1] - a[1]) // Ordena de mayor a menor cantidad
                         .map(([nombre, count]) => `
-                        <!-- NUEVO DISEÑO DE FILTRO CLICKEABLE -->
                         <label class="d-flex justify-content-between align-items-center w-100 py-1 mb-1" style="cursor: pointer; border-bottom: 1px solid #f8f9fa;">
                             <div class="d-flex align-items-center text-truncate" style="max-width: 85%;">
-                                <!-- Forzamos el tamaño y visibilidad del checkbox -->
                                 <input class="filter-checkbox me-2" type="checkbox" data-grupo="${grupo.id}" value="${nombre}" style="width: 16px; height: 16px; min-width: 16px; cursor: pointer; display: block !important; opacity: 1 !important; appearance: auto !important;">
                                 <span class="small text-dark">${nombre}</span>
                             </div>
