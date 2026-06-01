@@ -654,12 +654,15 @@ async function cargarFiltros() {
                     ${Object.entries(grupo.opciones)
                         .sort((a, b) => b[1] - a[1])
                         .map(([nombre, count]) => `
-                        <div class="form-check small d-flex justify-content-between">
-                            <label class="form-check-label text-truncate" style="max-width: 80%;">
-                                <input class="form-check-input filter-checkbox" type="checkbox" data-grupo="${grupo.id}" value="${nombre}"> ${nombre}
-                            </label>
-                            <span class="text-muted">(${count})</span>
-                        </div>
+                        <!-- NUEVO DISEÑO DE FILTRO CLICKEABLE -->
+                        <label class="d-flex justify-content-between align-items-center w-100 py-1 mb-1" style="cursor: pointer; border-bottom: 1px solid #f8f9fa;">
+                            <div class="d-flex align-items-center text-truncate" style="max-width: 85%;">
+                                <!-- Forzamos el tamaño y visibilidad del checkbox -->
+                                <input class="filter-checkbox me-2" type="checkbox" data-grupo="${grupo.id}" value="${nombre}" style="width: 16px; height: 16px; min-width: 16px; cursor: pointer; display: block !important; opacity: 1 !important; appearance: auto !important;">
+                                <span class="small text-dark">${nombre}</span>
+                            </div>
+                            <span class="text-muted small">(${count})</span>
+                        </label>
                     `).join('')}
                 </div>
             </div>
