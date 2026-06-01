@@ -18,7 +18,7 @@
             
             <div class="header-logo d-flex align-items-center">
                 <img src="Imagenes/Logo_Institucion.png" alt="Logo FES Aragón" height="45" class="me-3">
-                <span class="logo-text fw-bold text-uppercase" style="line-height: 1.2;">Atlas de Comunicadores <br> FES Aragon</span>
+                <span class="logo-text fw-bold text-uppercase" style="line-height: 1.2;">PAPIIT ATLAS INSTITUCIONAL<br> FES ARAGON</span>
             </div>
             <div class="header-search flex-grow-1 mx-5 d-none d-md-block">
                 <div class="search-wrapper">
@@ -26,15 +26,15 @@
                 </div>
             </div>
             <nav class="header-nav d-flex gap-3">
-                <a href="#" class="nav-link-custom">¿Quienes Somos?</a>
-                <a href="#" class="nav-link-custom">Sobre Este Proyecto</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalQuienesSomos" class="text-secondary text-decoration-none me-4" style="font-size: 1.05rem;">¿Quienes Somos?</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalProyecto" class="text-secondary text-decoration-none" style="font-size: 1.05rem;">Sobre Este Proyecto</a>
             </nav>
         </div>
     </header>
 
     <section class="hero-section bg-black text-white text-center py-5">
         <div class="container py-4">
-            <h1 class="display-4 fw-bolder mb-3 tracking-tighter">ATLAS INSTITUCIONAL FES ARAGON</h1>
+            <h1 class="display-4 fw-bolder mb-3 tracking-tighter"> ATLAS DE COMUNICADORES FES ARAGON PROYECTO PAPIIT IT100826</h1>
             <p class="hero-text lead mb-4 px-md-5">Base de de Datos de Creadores Independientes de Periodistas de Plataformas.</p>
             <button class="btn btn-neon px-5 py-2 fw-bold text-uppercase">Leer Más ↓</button>
         </div>
@@ -57,7 +57,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 border rounded shadow-sm">
                     <span class="text-muted small fw-bold" id="counter-text">Mostrando Creadores...</span>
                     <div class="btn-group btn-group-sm" id="view-controls">
-                        <button class="btn btn-dark active" data-view="grid">Red</button>
+                        <button class="btn btn-dark active" data-view="grid">Tarjeta</button>
                         <button class="btn btn-outline-dark" data-view="list">Lista</button>
                         <button class="btn btn-outline-dark" data-view="bubbles">Burbuja</button>
                         <button class="btn btn-outline-dark" data-view="wheel">Rueda</button>
@@ -71,6 +71,35 @@
             </main> 
         </div>
     </div>
+
+    <div class="modal fade" id="modalQuienesSomos" tabindex="-1" aria-labelledby="modalQuienesSomosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header" style="background-color: #002F6C; color: white;">
+        <h5 class="modal-title fw-bold" id="modalQuienesSomosLabel">¿Quiénes Somos?</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-dark" style="text-align: justify; line-height: 1.6;">
+        El <strong>Laboratorio de Macrodatos de la FES Aragón, UNAM</strong>, es un espacio académico y tecnológico orientado al análisis de datos masivos, la ciencia de datos y la investigación interdisciplinaria. El laboratorio promueve la colaboración entre distintas áreas del conocimiento y sus integrantes desarrollan soluciones tecnológicas basadas en datos para la generación de conocimiento y la toma de decisiones.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalProyecto" tabindex="-1" aria-labelledby="modalProyectoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header" style="background-color: #002F6C; color: white;">
+        <h5 class="modal-title fw-bold" id="modalProyectoLabel">Sobre Este Proyecto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-dark" style="text-align: justify; line-height: 1.6;">
+        El <strong>Atlas Institucional de Creadores Independientes, Periodistas y Plataformas Digitales</strong> forma parte de las actividades del proyecto <strong>PAPIIT IT100826</strong> <em>"Ecosistema de gestión de datos masivos para el análisis de la comunicación sociopolítica en redes y medios sociodigitales"</em>.<br><br>
+        Surge del trabajo interdisciplinario entre las carreras de Ingeniería en Computación y la Licenciatura de Comunicación y Periodismo de la FES Aragón, con el objetivo de apoyar el análisis, organización y visualización de información relacionada con creadores de contenido, periodistas y plataformas digitales.
+      </div>
+    </div>
+  </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
